@@ -257,7 +257,7 @@ func (f *ExfsFile) setSize(newSize uint64) error {
 					if err != nil {
 						return err
 					}
-					blk = append(blk, make([]byte, blkSize-uint64(len(blk))))
+					blk = append(blk, make([]byte, blkSize-uint64(len(blk)))...)
 					err = f.fs.blockManager.SetBlock(lastBlk, blk)
 					if err != nil {
 						return err
@@ -316,13 +316,22 @@ func (f *ExfsFile) Write(data []byte, off int64) (written uint32, code fuse.Stat
 	f.lock.Lock()
 	defer f.lock.Unlock()
 
+	succeed := false
+	// defer func() {
+	// 	if succeed {
+	// 		// TODO: f.fs.blockManager.commit()
+	// 	} else {
+	// 		// TODO: f.fs.blockManager.rollback()
+	// 	}
+	// }()
+
 	if !f.opening {
 		return 0, fuse.EBADF
 	}
 	if off < 0 {
 		return 0, fuse.EINVAL
 	}
-	end := int64(off) + int64(len(dest))
+	end := int64(off) + int64(len(data))
 	if end > int64(f.inode.Size) {
 		err := f.setSize(uint64(end))
 		if err != nil {
@@ -333,8 +342,9 @@ func (f *ExfsFile) Write(data []byte, off int64) (written uint32, code fuse.Stat
 
 	// write off:end
 	blkSize := int64(f.fs.blockManager.Blocksize())
-	if blkSize == SizeUnlimited {
+	if blkSize == int64(SizeUnlimited) {
 		if len(f.inode.Blocks) == 0 {
+			succeed = true
 			return 0, fuse.OK
 		} else {
 			blk, err := f.fs.blockManager.GetBlock(f.inode.Blocks[0])
@@ -349,6 +359,7 @@ func (f *ExfsFile) Write(data []byte, off int64) (written uint32, code fuse.Stat
 				return 0, fuse.EIO
 			}
 
+			succeed = true
 			return uint32(len(data)), fuse.OK
 		}
 	} else {
@@ -366,18 +377,19 @@ func (f *ExfsFile) Write(data []byte, off int64) (written uint32, code fuse.Stat
 
 				blkOff := firstBlk * blkSize
 				copy(blk[off-blkOff:end-blkOff], data)
-				err = f.fs.blockManager.SetBlock(firstBlk, blk)
+				err = f.fs.blockManager.SetBlock(f.inode.Blocks[firstBlk], blk)
 				if err != nil {
 					f.fs.logWriteBlkError(f.inode.Blocks[firstBlk], f.inodeBlkID, err)
 					return 0, fuse.EIO
 				}
 
+				succeed = true
 				return uint32(len(data)), fuse.OK
 			} else {
 				written = 0
 				var (
 					blkOff int64
-					leng   int64
+					leng   uint32
 					blk    []byte
 					err    error
 				)
@@ -388,7 +400,7 @@ func (f *ExfsFile) Write(data []byte, off int64) (written uint32, code fuse.Stat
 					return 0, fuse.EIO
 				}
 				blkOff = firstBlk * blkSize
-				leng = blkSize - (off - blkOff)
+				leng = uint32(blkSize - (off - blkOff))
 				copy(blk[off-blkOff:], data[written:written+leng])
 				err = f.fs.blockManager.SetBlock(f.inode.Blocks[firstBlk], blk)
 				if err != nil {
@@ -398,12 +410,12 @@ func (f *ExfsFile) Write(data []byte, off int64) (written uint32, code fuse.Stat
 				written += leng
 
 				for i := firstBlk + 1; i <= lastBlk-1; i++ {
-					err := f.fs.blockManager.SetBlock(f.inode.Blocks[i], data[written:written+blkSize])
+					err := f.fs.blockManager.SetBlock(f.inode.Blocks[i], data[written:written+uint32(blkSize)])
 					if err != nil {
 						f.fs.logWriteBlkError(f.inode.Blocks[i], f.inodeBlkID, err)
 						return written, fuse.EIO
 					}
-					written += blkSize
+					written += uint32(blkSize)
 				}
 
 				blk, err = f.fs.blockManager.GetBlock(f.inode.Blocks[lastBlk])
@@ -412,7 +424,7 @@ func (f *ExfsFile) Write(data []byte, off int64) (written uint32, code fuse.Stat
 					return written, fuse.EIO
 				}
 				blkOff = lastBlk * blkSize
-				leng = end - blkOff // 0 : end-blkOff
+				leng = uint32(end - blkOff) // 0 : end-blkOff
 				copy(blk[:leng], data[written:])
 				err = f.fs.blockManager.SetBlock(f.inode.Blocks[lastBlk], blk)
 				if err != nil {
@@ -421,6 +433,7 @@ func (f *ExfsFile) Write(data []byte, off int64) (written uint32, code fuse.Stat
 				}
 				written += leng
 
+				succeed = true
 				return written, fuse.OK
 			}
 		}
