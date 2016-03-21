@@ -6,7 +6,6 @@ import (
 
 	"github.com/hanwen/go-fuse/fuse/nodefs"
 	"github.com/hanwen/go-fuse/fuse/pathfs"
-	"github.com/lpital/exfs"
 	// "github.com/lpital/exfs/lpital"
 )
 
