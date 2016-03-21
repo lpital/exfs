@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 
+	"github.com/hanwen/go-fuse/fuse"
 	"github.com/hanwen/go-fuse/fuse/nodefs"
 	"github.com/hanwen/go-fuse/fuse/pathfs"
 	// "github.com/lpital/exfs/lpital"
@@ -28,7 +29,7 @@ func (me *ExFs) GetAttr(name string, context *fuse.Context) (*fuse.Attr, fuse.St
 	return nil, fuse.ENOENT
 }
 
-func (me *HelloFs) OpenDir(name string, context *fuse.Context) (c []fuse.DirEntry, code fuse.Status) {
+func (me *ExFs) OpenDir(name string, context *fuse.Context) (c []fuse.DirEntry, code fuse.Status) {
 	if name == "" {
 		c = []fuse.DirEntry{{Name: "NewFile", Mode: fuse.S_IFREG}}
 		return c, fuse.OK
