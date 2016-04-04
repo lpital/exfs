@@ -1,14 +1,33 @@
-qriqjrqwperpqepruqopuropuiqpoweuropqu
-qrqwer
-qw
-er
-qwr
-qwe
-r
-qw
-r
-qwr
-qw
-r
-qwr
-q
+18764 execve("./hadoopRun.sh", ["./hadoopRun.sh"], [/* 47 vars */]) = 0
+18764 brk(0)                            = 0x1506000
+18764 mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f76cf18e000
+18764 access("/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+18764 open("/usr/lib64/mpich/lib/tls/x86_64/libtinfo.so.5", O_RDONLY) = -1 ENOENT (No such file or directory)
+18764 stat("/usr/lib64/mpich/lib/tls/x86_64", 0x7fff77be0550) = -1 ENOENT (No such file or directory)
+18764 open("/usr/lib64/mpich/lib/tls/libtinfo.so.5", O_RDONLY) = -1 ENOENT (No such file or directory)
+18764 stat("/usr/lib64/mpich/lib/tls", 0x7fff77be0550) = -1 ENOENT (No such file or directory)
+18764 open("/usr/lib64/mpich/lib/x86_64/libtinfo.so.5", O_RDONLY) = -1 ENOENT (No such file or directory)
+18764 stat("/usr/lib64/mpich/lib/x86_64", 0x7fff77be0550) = -1 ENOENT (No such file or directory)
+18764 open("/usr/lib64/mpich/lib/libtinfo.so.5", O_RDONLY) = -1 ENOENT (No such file or directory)
+18764 stat("/usr/lib64/mpich/lib", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+18764 open("/etc/ld.so.cache", O_RDONLY) = 3
+18764 fstat(3, {st_mode=S_IFREG|0644, st_size=97172, ...}) = 0
+18764 mmap(NULL, 97172, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f76cf176000
+18764 close(3)                          = 0
+18764 open("/lib64/libtinfo.so.5", O_RDONLY) = 3
+18764 read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0@\310\300\0070\0\0\0"..., 832) = 832
+18764 fstat(3, {st_mode=S_IFREG|0755, st_size=134792, ...}) = 0
+18764 mmap(0x3007c00000, 2228832, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x3007c00000
+18764 mprotect(0x3007c1d000, 2093056, PROT_NONE) = 0
+18764 mmap(0x3007e1c000, 16384, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1c000) = 0x3007e1c000
+18764 mmap(0x3007e20000, 608, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x3007e20000
+18764 close(3)                          = 0
+18764 open("/usr/lib64/mpich/lib/libdl.so.2", O_RDONLY) = -1 ENOENT (No such file or directory)
+18764 open("/lib64/libdl.so.2", O_RDONLY) = 3
+18764 read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\340\r\200\370?\0\0\0"..., 832) = 832
+18764 fstat(3, {st_mode=S_IFREG|0755, st_size=22536, ...}) = 0
+18764 mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f76cf175000
+18764 mmap(0x3ff8800000, 2109696, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x3ff8800000
+18764 mprotect(0x3ff8802000, 2097152, PROT_NONE) = 0
+18764 mmap(0x3ff8a02000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2000) = 0x3ff8a02000
+18764 close(3)                  
